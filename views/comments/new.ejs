@@ -1,9 +1,10 @@
 <% include ../partials/header %>
     <div class="container">
-        <h1 style="text-align:center;">Add new comments <%= campground.name%></h1>
-
-        <div class="row">
-            <div style="width: 30%; margin: 30px auto;">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <h2 class="text-center">
+                        Add new comments <%= campground.name%>
+                </h2>
                 <form action="/campgrounds/<%= campground._id %>/comments" method="POST">
                     <div class="form-group">
                         <input class="form-control" type="text" name="comment[author]" placeholder="author">
@@ -15,9 +16,8 @@
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
                     </div>
                 </form>
-        <a href="/campgrounds">Back</a>
+                <a href="/campgrounds">Back</a>
                 
             </div>
         </div>
-    </div>
     <% include ../partials/footer %>
