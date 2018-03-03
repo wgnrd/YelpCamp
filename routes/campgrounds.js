@@ -4,6 +4,15 @@ const Campground = require('../models/campground');
 const router = express.Router();
 
 
+// middleware
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+}
+
 // Index -> Show all Campgrounds
 router.get('/', (req, res) => {
     Campground.find({}, (err, campgrounds) => {
@@ -16,13 +25,19 @@ router.get('/', (req, res) => {
 });
 
 // Create -> add new campground to db
-router.post('/', (req, res) => {
+router.post('/', isLoggedIn, (req, res) => {
     const { name } = req.body;
     const { image } = req.body;
     const { description } = req.body;
+    const author = {
+        id: req.user._id,
+        username: req.user.username,
+    };
 
     // Save new Campground to db
-    Campground.create({ name, image, description }, (err) => {
+    Campground.create({
+        name, image, description, author,
+    }, (err) => {
         if (err) {
             console.log(err);
         } else {
@@ -33,7 +48,7 @@ router.post('/', (req, res) => {
 });
 
 // NEW -> Display the form for a new campground
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('campgrounds/new');
 });
 
@@ -48,5 +63,38 @@ router.get('/:id', (req, res) => {
         }
     });
 });
+
+// Edit Campground Route
+router.get('/:id/edit', (req, res) => {
+    Campground.findById(req.params.id, (err, campground) => {
+        if (err) {
+            res.redirect('/campgrounds');
+        } else {
+            res.render('../views/campgrounds/edit', { campground });
+        }
+    });
+});
+
+// Update Campground Route
+router.put('/:id', (req, res) => {
+    Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err) => {
+        if (err) {
+            res.redirect('/campgrounds');
+        } else {
+            res.redirect(`/campgrounds/${req.params.id}`);
+        }
+    });
+});
+
+// Destroy Campgrounds
+router.delete('/:id', (req, res) => {
+    Campground.findByIdAndRemove(req.params.id, (err) => {
+        if (err) {
+            console.log(err);
+        }
+        res.redirect('/campgrounds');
+    });
+});
+
 
 module.exports = router;
