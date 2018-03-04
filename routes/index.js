@@ -9,13 +9,13 @@ router.get('/', (req, res) => {
 });
 
 // middleware
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.redirect('/login');
-    }
-}
+// function isLoggedIn(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         next();
+//     } else {
+//         res.redirect('/login');
+//     }
+// }
 
 // ------------------
 // Auth Routes

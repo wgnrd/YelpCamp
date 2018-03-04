@@ -20,14 +20,15 @@ function checkCampgroundOwnership(req, res, next) {
                 res.redirect('back');
             } else if (campground.author.id.equals(req.user._id)) {
                 next();
-            } else {
-                res.redirect('back');
             }
         });
-    } else {
-        res.redirect('back');
     }
+    res.redirect('back');
 }
+
+// ------------------
+// Routes
+// ------------------
 
 
 // Index -> Show all Campgrounds

@@ -12,8 +12,9 @@ function isLoggedIn(req, res, next) {
         res.redirect('/login');
     }
 }
+
 // ------------------
-// Comments
+// Routes
 // ------------------
 
 // New comment
@@ -38,9 +39,12 @@ router.post('/', isLoggedIn, (req, res) => {
                 if (commentCreateErr) {
                     console.log(commentCreateErr);
                 } else {
-                    comment.author.id = req.user._id;
-                    comment.author.username = req.user.username;
-                    comment.save();
+                    // comment.author.id = req.user._id;
+                    // comment.author.username = req.user.username;
+                    const newComment = comment;
+                    newComment.author.id = req.user._id;
+                    newComment.author.username = req.user.username;
+                    newComment.save();
                     foundCampground.comments.push(comment);
                     foundCampground.save();
                     res.redirect(`/campgrounds/${foundCampground._id}`);
@@ -48,6 +52,11 @@ router.post('/', isLoggedIn, (req, res) => {
             });
         }
     });
+});
+
+// Edit Comment
+router.get('/:comment_id/edit', (req, res) => {
+    res.render('comments/edit', {});
 });
 
 module.exports = router;
