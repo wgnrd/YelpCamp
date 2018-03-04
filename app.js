@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-// const Comment = require('./models/comment');
 const User = require('./models/user');
 // const seedDb = require('./seed');
 const methodOverride = require('method-override');
