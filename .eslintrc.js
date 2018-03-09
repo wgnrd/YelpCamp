@@ -5,6 +5,6 @@ module.exports = {
         'max-len': ['warn', 120],
         "no-console": "off",
         "no-underscore-dangle": "off",
-        "linebreak-style": ['error', 'windows']
+        "standard": { "env": ["mocha"] }
     }
 };

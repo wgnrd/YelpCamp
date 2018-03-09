@@ -47,3 +47,5 @@ app.use('/campgrounds/:id/comments', commentRoutes);
 app.listen(3000, 'localhost', () => {
     console.log('YelpSrv has startet');
 });
+
+module.exports = app;
