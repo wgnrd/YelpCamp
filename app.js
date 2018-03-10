@@ -8,6 +8,8 @@ const User = require('./models/user');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 
+const PORT = process.env.PORT || 5000;
+
 const commentRoutes = require('./routes/comments');
 const campgroundRoutes = require('./routes/campgrounds');
 const indexRoutes = require('./routes/index');
@@ -48,8 +50,8 @@ app.use(indexRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
 
-app.listen(3000, 'localhost', () => {
-    console.log('We are listening on 3000');
+app.listen(PORT, 'localhost', () => {
+    console.log(`We are listening on ${PORT}`);
 });
 
 module.exports = app;
