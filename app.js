@@ -6,6 +6,7 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 // const seedDb = require('./seed');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
 
 const commentRoutes = require('./routes/comments');
 const campgroundRoutes = require('./routes/campgrounds');
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(`${__dirname}/public`));
 app.use(methodOverride('_method'));
+app.use(flash());
 
 // seedDb();
 
@@ -36,6 +38,8 @@ passport.deserializeUser(User.deserializeUser());
 // middleware
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash('error');
+    res.locals.success = req.flash('success');
     next();
 });
 
@@ -45,7 +49,7 @@ app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
 
 app.listen(3000, 'localhost', () => {
-    console.log('YelpSrv has startet');
+    console.log('We are listening on 3000');
 });
 
 module.exports = app;

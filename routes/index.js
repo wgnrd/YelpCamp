@@ -8,15 +8,6 @@ router.get('/', (req, res) => {
     res.render('landing');
 });
 
-// middleware
-// function isLoggedIn(req, res, next) {
-//     if (req.isAuthenticated()) {
-//         next();
-//     } else {
-//         res.redirect('/login');
-//     }
-// }
-
 // ------------------
 // Auth Routes
 // ------------------
@@ -32,9 +23,11 @@ router.post('/register', (req, res) => {
     User.register(newUser, req.body.password, (err) => {
         if (err) {
             console.log(err);
-            res.render('register');
+            req.flash('error', err.message);
+            res.redirect('/register');
         } else {
             passport.authenticate('local')(req, res, () => {
+                req.flash('success', `Nice to meet you ${newUser.username}`);
                 res.redirect('/campgrounds');
             });
         }
@@ -52,11 +45,13 @@ router.post('/login', passport.authenticate(
     {
         successRedirect: '/campgrounds',
         failureRedirect: '/login',
+        failureFlash: 'The email or password is incorrect',
     },
 ));
 
 router.get('/logout', (req, res) => {
     req.logout();
+    req.flash('success', 'You logged out');
     res.redirect('/campgrounds');
 });
 

@@ -14,6 +14,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
     Campground.find({}, (err, campgrounds) => {
         if (err) {
+            req.flash('error', err.message);
             console.log(err);
         } else {
             res.render('campgrounds/index', { campgrounds });
@@ -37,6 +38,7 @@ router.post('/', middleware.isLoggedIn, (req, res) => {
         name, image, description, author, price,
     }, (err) => {
         if (err) {
+            req.flash('error', err.message);
             console.log(err);
         } else {
             res.redirect('/campgrounds');
@@ -55,6 +57,7 @@ router.get('/:id', (req, res) => {
     // res.send('This will be the show page');
     Campground.findById(req.params.id).populate('comments').exec((err, campground) => {
         if (err) {
+            req.flash('error', err.message);
             console.log(err);
         } else {
             res.render('campgrounds/show', { campground });
@@ -73,6 +76,7 @@ router.get('/:id/edit', middleware.checkCampgroundOwnership, (req, res) => {
 router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err) => {
         if (err) {
+            req.flash('error', err.message);
             res.redirect('/campgrounds');
         } else {
             res.redirect(`/campgrounds/${req.params.id}`);
@@ -84,6 +88,7 @@ router.put('/:id', middleware.checkCampgroundOwnership, (req, res) => {
 router.delete('/:id', middleware.checkCampgroundOwnership, (req, res) => {
     Campground.findByIdAndRemove(req.params.id, (err) => {
         if (err) {
+            req.flash('error', err.message);
             console.log(err);
         }
         res.redirect('/campgrounds');
