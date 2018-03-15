@@ -2,12 +2,38 @@ const express = require('express');
 const User = require('../models/user');
 const passport = require('passport');
 const middleware = require('../middleware');
+const nodemailer = require('nodemailer');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
     res.render('landing');
 });
+
+
+function sendUserMail(username, email, token) {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+            user: 'jyumbadl5luteue5@ethereal.email',
+            pass: process.env.PWD,
+        },
+    });
+    const mailOptions = {
+        to: email,
+        from: 'passwordreset@demo.com',
+        subject: 'Yempli Password Reset',
+        text: `${'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://localhost:5000/reset/'}${token}\n\n` +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+    };
+    transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+}
 
 // ------------------
 // Auth Routes
@@ -62,25 +88,68 @@ router.get('/pwchange', (req, res) => {
 
 router.put('/pwchange/:id', middleware.isLoggedIn, (req, res) => {
     if (req.body.password !== req.body.confirmpassword) {
-        req.flash('error', 'Password and confirm password must match');
+        req.flash('error', 'password and confirm password must match');
         res.redirect('/pwchange');
+    } else {
+        User.findById(req.params.id, (err, foundUser) => {
+            if (err) {
+                req.flash('error', err);
+                res.redirect('/pwchange');
+            }
+            foundUser.setPassword(req.body.password, (reseterr) => {
+                if (reseterr) {
+                    req.flash('error', reseterr);
+                } else {
+                    foundUser.save();
+                    req.flash('success', 'password changed');
+                    res.redirect('/campgrounds');
+                }
+            });
+        });
     }
+});
 
-    User.findById(req.params.id, (err, foundUser) => {
+router.get('/forgot', (req, res) => {
+    res.render('forgot');
+});
+
+router.put('/forgot', (req, res) => {
+    const { username } = req.body;
+    const { email } = req.body;
+    User.findOne({ username }, (err, foundUser) => {
         if (err) {
             req.flash('error', err);
-            res.redirect('/pwchange');
+        } else {
+            foundUser.resetToken = foundUser._id;
+            User.update(foundUser);
+            sendUserMail(username, email, foundUser.resetToken);
         }
-        foundUser.setPassword(req.body.password, (reseterr) => {
-            if (reseterr) {
-                req.flash('error', reseterr);
-            } else {
-                foundUser.save();
-                req.flash('success', 'Password changed');
-                res.redirect('/campgrounds');
-            }
-        });
+    });
+    res.redirect('/');
+});
+
+router.get('/reset/:resettoken', (req, res) => {
+    res.render('reset', { token: req.params.resettoken });
+});
+
+router.put('/reset/:resettoken', (req, res) => {
+    User.findById(req.params.resettoken, (err, foundUser) => {
+        if (err) {
+            console.log(err);
+        } else {
+            foundUser.setPassword(req.body.password, (reseterr) => {
+                if (reseterr) {
+                    req.flash('error', reseterr);
+                } else {
+                    foundUser.save();
+                    req.flash('success', 'Password changed');
+                    req.login(foundUser);
+                    res.redirect('/campgrounds');
+                }
+            });
+        }
     });
 });
+
 
 module.exports = router;

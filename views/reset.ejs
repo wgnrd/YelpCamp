@@ -1,10 +1,10 @@
 <% include ./partials/header %>
     <div class="container">
         <h1 class="text-center display-4">
-            change password
+            reset
         </h1>
         <div class="col-md-7 col-lg-5 mx-auto">
-            <form action="/pwchange/<%= currentUser._id %>?_method=PUT" method="post">
+            <form action="/reset/<%= token %>/?_method=PUT" method="post">
                 <div class="form-group">
                     <input type="password" name="password" class="form-control" placeholder="password">
                 </div>
