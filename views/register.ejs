@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title display-3 text-center">
-                        Register
+                        register
                     </h2>
                     <form action="/register" method="post" class="justify-content-center">
                         <div class="form-group">
@@ -14,9 +14,14 @@
                             <input class="form-control" type="password" name="password" placeholder="password">
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Register">
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="register">
                         </div>
                     </form>
                 </div>
+            </div>
+
+            <hr>
+            <div class="text-center">
+                    <span class="font-weight-light"> already have an account? <a href="/login" class="font-weight-light">login</a></span>
             </div>
             <% include ./partials/footer %>

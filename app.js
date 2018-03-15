@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-// const seedDb = require('./seed');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 
@@ -15,7 +14,7 @@ const campgroundRoutes = require('./routes/campgrounds');
 const indexRoutes = require('./routes/index');
 
 const app = express();
-mongoose.connect(process.env.DBSTRING);
+mongoose.connect('mongodb://localhost/yelp_camp');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(`${__dirname}/public`));
@@ -52,6 +51,7 @@ app.use('/campgrounds/:id/comments', commentRoutes);
 
 app.listen(PORT, () => {
     console.log(`We are listening on ${PORT}`);
+    console.log(`DB:${process.env.DBSTRING}`);
 });
 
 module.exports = app;
