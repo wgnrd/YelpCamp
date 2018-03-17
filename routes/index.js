@@ -11,13 +11,14 @@ router.get('/', (req, res) => {
 });
 
 
-function sendUserMail(username, email, token) {
+function sendUserMail(email, token) {
+    console.log(process.env.PW);
     const transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
             user: 'jyumbadl5luteue5@ethereal.email',
-            pass: process.env.PWD,
+            pass: process.env.PW,
         },
     });
     const mailOptions = {
@@ -46,7 +47,7 @@ router.get('/register', (req, res) => {
 
 // handle sign up logic
 router.post('/register', (req, res) => {
-    const newUser = new User({ username: req.body.username });
+    const newUser = new User({ username: req.body.username, email: req.body.email });
     User.register(newUser, req.body.password, (err) => {
         if (err) {
             console.log(err);
@@ -114,18 +115,18 @@ router.get('/forgot', (req, res) => {
 });
 
 router.put('/forgot', (req, res) => {
-    const { username } = req.body;
     const { email } = req.body;
-    User.findOne({ username }, (err, foundUser) => {
+    User.findOne({ email }, (err, foundUser) => {
         if (err) {
             req.flash('error', err);
         } else {
             foundUser.resetToken = foundUser._id;
             User.update(foundUser);
-            sendUserMail(username, email, foundUser.resetToken);
+            sendUserMail(email, foundUser.resetToken);
+            req.flash('success', `Mail is sent to ${email}`);
         }
+        res.redirect('/forgot');
     });
-    res.redirect('/');
 });
 
 router.get('/reset/:resettoken', (req, res) => {
@@ -143,8 +144,9 @@ router.put('/reset/:resettoken', (req, res) => {
                 } else {
                     foundUser.save();
                     req.flash('success', 'Password changed');
-                    req.login(foundUser);
-                    res.redirect('/campgrounds');
+                    req.login(foundUser, (err) => {
+                        res.redirect('/campgrounds');
+                    });
                 }
             });
         }
