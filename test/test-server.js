@@ -10,16 +10,16 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe('campgrounds', () => {
-    it('should list all campgrounds on /campgrounds GET', (done) => {
-        chai.request(server)
-            .get('/campgrounds')
-            .end((err, res) => {
-                expect(err).to.be.null;
-                expect(res).to.have.status(200);
-                expect(res).to.be.html;
-                done();
-            });
-    });
+    // it('should list all campgrounds on /campgrounds GET', (done) => {
+    //     chai.request(server)
+    //         .get('/campgrounds')
+    //         .end((err, res) => {
+    //             expect(err).to.be.null;
+    //             expect(res).to.have.status(200);
+    //             expect(res).to.be.html;
+    //             done();
+    //         });
+    // });
     // it('should list a SINGLE campground on /campgrounds/<id> GET', (done) => {
     //     chai.request(server)
     //         .get('/campgrounds/5a9ac6b519daa523e6c829ee')
