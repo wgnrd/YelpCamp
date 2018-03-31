@@ -26,9 +26,9 @@ app.use(flash());
 
 // Passport Config
 app.use(require('express-session')({
-    secret: 'You Can see G0d when I take my mask off',
-    resave: false,
-    saveUninitialized: false,
+  secret: 'You Can see G0d when I take my mask off',
+  resave: false,
+  saveUninitialized: false,
 }));
 
 app.use(passport.initialize());
@@ -39,10 +39,10 @@ passport.deserializeUser(User.deserializeUser());
 
 // middleware
 app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
-    res.locals.error = req.flash('error');
-    res.locals.success = req.flash('success');
-    next();
+  res.locals.currentUser = req.user;
+  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
+  next();
 });
 
 // Routes
@@ -51,8 +51,8 @@ app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/comments', commentRoutes);
 
 app.listen(PORT, () => {
-    console.log(`We are listening on ${PORT}`);
-    console.log(`DB:${process.env.DBSTRING}`);
+  console.log(`We are listening on ${PORT}`);
+  console.log(`DB:${process.env.DBSTRING}`);
 });
 
 module.exports = app;
